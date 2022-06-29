@@ -1,40 +1,48 @@
-                   UNCMP v1.00 PROGRAMMER MANUAL
+                   UNCMP v1.04 PROGRAMMER MANUAL
                    -----------------------------
 
 About this file
 ---------------
-This document is intended to be helpfull for programmers who
-are interested in the workings of UNCMP.  People who are not
-interested in hacking UNCMP should skip this file and read
-the USER.MAN file included in this archive.
+This document is intended to be helpful for programmers who are interested in
+the workings of UNCMP.  People who are not interested in hacking UNCMP should
+skip this file and read the USER.MAN file included in this archive.
 
 Development system used
 -----------------------
-The author wrote UNCMP on a GRiDCASE 1530 80386 based
-portable running MS-DOS 3.30 with 1 megabyte of memory.  MSC
-v5.1 was used for development, testing, and the final
-version, however Turbo C v2.00 was tested with UNCMP
-occasionally and with the final version.  I used the EC text
-editor from C Source.
+The author wrote UNCMP on a GRiDCASE 1530 80386 based portable running MS-DOS
+3.30 with 1 megabyte of memory.  MSC v5.1 was used for development, testing,
+and the final version, however Turbo C v2.00 was tested with UNCMP occasionally
+and with the final version.  I used the EC text editor from C Source.
+
+MSC dependant information
+-------------------------
+The STUBS.C file has two null functions that speed things up a little with
+MSC.  The COMPACT model is used.
+
+TC dependant information
+------------------------
+The TC version of UNCMP is slower and larger than the MSC version.  To create
+the TC version I had to use the HUGE memory model, which could account for
+speed problems.  Be sure to use EXEPACK on the EXE if you have it, it squeezes
+the file size down from about 100k to about 30k.
 
 Development history
 -------------------
-UNCMP was originally created to extract all crunched
-(arctype 8) and squashed (arctype 9) files from an archive.
-It later added the ability to extract every archive type
-except crushing (arctype 10) and the ability to extract
-only named files.
+UNCMP was originally created to extract all crunched (arctype 8) and squashed
+(arctype 9) files from an archive.  It later added the ability to extract every
+archive type except crushing (arctype 10) and the ability to extract only named
+files.
 
 General background on arc files
 -------------------------------
-The arc format of archives has become the industry standard
-since System Enhancement Associates created the original ARC
-archive utility.  Since then it has added and removed many
-different compression systems in an attempt to create the
-smallest archives.  Only type 2,3 and 8 are used by the
-current version of ARC and only type 2,3,8 and 9 are used by
-PKARC.  The other types are obsolete, but still supported by
-UNCMP.
+The arc format of archives has become the industry standard since System
+Enhancement Associates created the original ARC archive utility.  Since then it
+has added and removed many different compression systems in an attempt to create
+the smallest archives.  Only type 2,3 and 8 are used by the current version of
+ARC and only type 2,3,8 and 9 are used by PKARC.  The other types are obsolete,
+but still supported by UNCMP.  Type 10 is used by PAK, a product of NoGate
+Consultants, but UNCMP doesn't support it since not all the specs are
+available.
 
      #   Description
     ---  ---------------------------------------------------
@@ -42,51 +50,101 @@ UNCMP.
          current version.
      2   no compression, with new header.
      3   RLE compression.
-     4   Squeezing, or classic Huffman.
+     4   Squeezing (or classic Huffman) with RLE
      5   Lempel-Ziv static 12 bit without RLE
      6   Lempel-Ziv static 12 bit with RLE
      7   Lempel-Ziv static 12 bit with RLE and new hash
          method.
      8   Dynamic Lempel-Ziv-Welch 9-12 bit with RLE.
      9   Dynamic Lempel-Ziv-Welch 9-13 bit without RLE.
+    10   Dynamic Lempel-Ziv-Welch 2-13 bit without RLE and
+         deletion of non-frequently used nodes.  Used by
+         files with the extension PAK.
 
 Archive header
 --------------
-The format for the archive header can be found in ARCHEAD.H.
-The general format of an archive is <ARCHIVE_HEADER> <FILE>
-<ARCHIVE_HEADER> FILE <ARC_END>.  <ARC_END> is a special
-two byte pair 0x1a and 0x00.
+The format for the archive header can be found in ARCHEAD.H.  The general
+format of an archive is as follows:
+
+<ARCHIVE_HEADER>
+    COMPRESSED_FILE
+<ARCHIVE_HEADER>
+    COMPRESSED_FILE
+<ARCHIVE_END>
+
+<ARCHIVE_HEADER> is the header for each individual file in the archive.
+<ARCHIVE_END> is a two-byte pair (0x1a,0x00).
 
 Wish list of enhancements
 -------------------------
-What follows is a wish list of enhancements that I'd be more
-than happy to see implemented if you've got the time.
+What follows is a wish list of enhancements that I'd be more than happy to see
+implemented if you've got the time.
 
   o Support for garbled files (encrypted)
   o Output to console or printer
   o Rewrite getcode() in module DLZW1213.C in assembly
+    (NOTE: as of version 1.04, getcode is right now near optimal speed)
   o Faster RLE decoding (with large buffer handling)
   o Better buffer handling (relying on setvbuf() is slow)
-  o Support for crushing (arctype 10)
+->o Support for crushing (arctype 10)<-
+  o Support for wildcard archive names (ie. 'UNCMP -o *.arc *.c' would extract
+    all the *.C files from every arc file in the current directory)
+  o Self-extracting archive capability
+    (How do you make an EXE think of the rest of itself as an archive?)
+->o Compatiblity with more archive formats (ZIP/LZH)?  What do you think?<-
 
-Since UNCMP is relatively slow, any speed improvements are
-welcome.
+Any speed improvements to UNCMP are welcome.
 
 Problems in portability
 -----------------------
-I'm not sure of where problems will be in porting, however I
-believe that the only real system dependant stuff is in
-UNCMP.C and deals with overwrite checking and filestamp
-setting.
+I'm not sure of where problems will be in porting, however I believe that the
+only real system dependant stuff is in UNCMP.C and deals with overwrite
+checking and filestamp setting.
 
 Commenting
 ----------
-I believe that most of the code is well-commented and should
-be easy to read.
+I believe that most of the code is well-commented and should be easy to read.
 
 Testing
 -------
-If you have a version up and running for your compiler,
-please send me the sources and information at one of the
-BBS's mentioned in the USER.MAN file.
+If you have a version up and running for your compiler, please send me the
+sources and information at one of the BBS's mentioned in the USER.MAN file.
 
+Optimizations
+-------------
+Most of the optimizations I performed were adding the 'register' keyword
+to frequently used variables, adding the 'near' keyword to certain frequently
+accessed global variables and speeding things up with inline functions.  I
+removed the function putc_pak() and changed it to inline output and addcrc.
+I found that although MSC claims that declaring variables as 'register' may
+inhibit MSC'c ability to optimize, if you examine the assembly code generated
+by the compiler's /Fa option for loops and frequently used variables, you will
+probably pick the optimal use of 'register', which the compiler won't always
+do.  This has made UNCMP very comparable in speed with ARC v6.00.
+
+Where my priorities are in writing UNCMP
+----------------------------------------
+UNCMP was originally going to be released without source code, so I didn't care
+much for portability and readability.  Later, I decided to clean up the source
+and release UNCMP with full source code.  Since then I've been faced with the
+question of whether speed or portability are more important.  I know that in a
+perfect world a program could be fast and portable, but in the PC world it
+has become apparent that they are mutually exclusive.  I have chosen speed as
+the most important of the two.  To achieve greater speed I have reduced the
+readability of UNCMP by replacing the input/output functions with inline
+functions.  All successive versions of UNCMP will hopefully be faster, but if
+you would rather have portability and readability, than I suggest the v1.03
+(first release) sources, since it was very readable and will probably be the
+most portable of all the versions to come.
+
+Update information
+------------------
+1.03
+  o First release
+1.04
+  o Second release
+  o Various speed optimizations
+    o removed putc_pak() and changed to inline
+    o added NEAR defines
+    o moved getcode() to a separate file
+

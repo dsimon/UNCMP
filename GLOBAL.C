@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - GLOBAL, Version 1.03, created 6-28-89
+* UNCMP - GLOBAL, Version 1.04, created 7-03-89
 *
 * Contains all global variables used by the modules.
 *
@@ -8,15 +8,16 @@
 * This code has been released into the Public Domain.
 *******************************************************************/
 
+#include <stdio.h>
+#include "uncmp.h"
 #include "archead.h"
 
-unsigned char state;              /* state of ncr packing */
-unsigned int crc;                 /* crc of current file */
-long sizeleft;                    /* for fileio routines */
-int lastc;                        /* last character ouput by putc_rle() */
+unsigned char NEAR state;         /* state of ncr packing */
+unsigned int NEAR crc;            /* crc of current file */
+long NEAR sizeleft;               /* for fileio routines */
 int errors=0;                     /* number of errors */
 char path[63];                    /* path name to output to */
-char headertype;                  /* headertype of archive */
+char NEAR headertype;             /* headertype of archive */
 
 struct archive_header archead;    /* header for current archive */
 
@@ -26,3 +27,5 @@ char warning=1;
 char overwrite=0;
 char testinteg=0;
 char listarchive=0;
+
+

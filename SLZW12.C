@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - SLZW12, Version 1.03, created 6-28-89
+* UNCMP - SLZW12, Version 1.04, created 7-03-89
 *
 * Static Lempel-Ziv-Welch 12 bit uncompression module.
 *
@@ -24,9 +24,9 @@
 # include <memory.h>
 # include <string.h>
 #endif
+#include "uncmp.h"
 #include "archead.h"
 #include "global.h"
-#include "uncmp.h"
 
 #define FALSE      (0)
 #define TRUE       !FALSE
@@ -45,8 +45,6 @@ unsigned int hash(unsigned int, unsigned char, int);
 
 static char stack[STACKSIZE];     /* stack for pushing and popping */
                                   /* characters */
-static int sp = 0;                /* current stack pointer */
-static unsigned int inbuf = EMPTY;
 
 static struct entry {
     char used;
@@ -62,14 +60,17 @@ int slzw_decomp(FILE * in, FILE * out, int arctype)
     char unknown = FALSE;
     int code_count = TABSIZE - 256;
     struct entry *ep;
+    static int sp = 0;                /* current stack pointer */
 
     headertype = arctype;
 
     init_tab();              /* set up atomic code definitions */
     code = oldcode = getcode12(in);
     c = string_tab[code].follower;     /* first code always known      */
-    if (headertype == 5)
-         putc_pak(c, out);
+    if (headertype == 5) {
+         add1crc(c);
+         putc(c,out);
+         }
     else
          putc_rle(c, out);
     finchar = c;
@@ -101,25 +102,32 @@ int slzw_decomp(FILE * in, FILE * out, int arctype)
     /* above loop terminates, one way or another, with                  */
     /* string_tab[code].follower = first char in string                 */
 
-    if (headertype == 5)
-        putc_pak(finchar, out);
+    if (headertype == 5) {
+         add1crc(finchar);
+         putc(c,out);
+         }
     else
-        putc_rle(finchar, out);
+         putc_rle(finchar, out);
 
     /* pop anything stacked during code parsing                         */
 
     while (EMPTY != (tempc = (sp > 0) ? (int)stack[--sp] : EMPTY)) {
-         if (headertype == 5)
-              putc_pak(tempc, out);
+         if (headertype == 5) {
+              add1crc(tempc);
+              putc(tempc, out);
+              }
          else
               putc_rle(tempc, out);
     }
     if (unknown) {      /* if code isn't known the follower char of last */
-         if (headertype == 5)
-              putc_pak(finchar = lastchar, out);
+         if (headertype == 5) {
+              finchar = lastchar;
+              add1crc(finchar);
+              putc(finchar, out);
+              }
          else
               putc_rle(finchar = lastchar, out);
-        unknown = FALSE;
+         unknown = FALSE;
     }
     if (code_count) {
         upd_tab(oldcode, finchar);
@@ -217,24 +225,27 @@ void upd_tab(unsigned int pred, unsigned int foll)
 int getcode12(FILE *in)
 {
     register int localbuf, returnval;
+    static unsigned int inbuf = EMPTY;
 
     if (EMPTY == inbuf) {    /* On code boundary */
-         if (EOF == (localbuf = getc_pak(in))) { /* H L1 byte - on code boundary */
+         if ((sizeleft-2) < 0)
               return EOF;
-              }
+         sizeleft-=2;
+         localbuf = getc(in);
          localbuf &= 0xFF;
-         if (EOF == (inbuf = getc_pak(in))) {    /* L0 Hnext */
-              return EOF;   /* The file should always end on code boundary */
-              }
+         inbuf = getc(in);
          inbuf &= 0xFF;
          returnval = ((localbuf << 4) & 0xFF0) + ((inbuf >> 4) & 0x00F);
          inbuf &= 0x000F;
     } else {                 /* buffer contains nibble H */
-         if (EOF == (localbuf = getc_pak(in)))
+         if (!sizeleft)
               return EOF;
+         sizeleft--;
+         localbuf = getc(in);
          localbuf &= 0xFF;
          returnval = localbuf + ((inbuf << 8) & 0xF00);
          inbuf = EMPTY;
          }
     return returnval;
 }
+

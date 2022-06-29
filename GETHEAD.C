@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - GETHEAD, Version 1.03, created 6-28-89
+* UNCMP - GETHEAD, Version 1.04, created 7-03-89
 *
 * Archive header reader
 *
@@ -10,16 +10,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "uncmp.h"
 #include "archead.h"
 #include "global.h"
-#include "uncmp.h"
 
-int getarcheader(in)
-FILE *in;
+int getarcheader(FILE *in)
 {
     /* read in archead minus the length field */
 
-    if ((fread((char *)&archead, sizeof(char), sizeof(struct archive_header) - sizeof(long), in)) < 2) {
+    if ((fread(&archead, sizeof(char), sizeof(struct archive_header) - sizeof(long), in)) < 2) {
          printf("Archive has invalid header\n");
          exit(1);
          }
@@ -40,7 +39,7 @@ FILE *in;
     /* if not obsolete header type then the next long is the length field */
 
     if (archead.atype != 1) {
-     if ((fread((char *)&archead.length, sizeof(long), 1, in)) < 1) {
+     if ((fread(&archead.length, sizeof(long), 1, in)) < 1) {
               printf("Archive has invalid header\n");
               exit(1);
               }
@@ -52,3 +51,4 @@ FILE *in;
 
     return(1);
     }
+

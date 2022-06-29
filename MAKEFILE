@@ -1,5 +1,5 @@
 ####################################################################
-# UNCMP - MAKEFILE, Version 1.03, created 6-28-89
+# UNCMP - MAKEFILE, Version 1.04, created 7-03-89
 #
 # Microsoft makefile for creating UNCMP v1.03.
 #
@@ -10,48 +10,79 @@
 # This code has been released into the Public Domain.
 ####################################################################
 
-C_OPTS = -c -O
-CDEFS =
-HDRS = global.h archead.h dlzw1213.h uncmp.h
-SRCS = uncmp.c crc.c fileio.c global.c dispatch.c dlzw1213.c \
-    huffman.c slzw12.c listarc.c gethead.c filelist.c stubs.c \
-    store.c errors.c pack.c testarc.c
-OBJS = uncmp.o crc.o fileio.o global.o dispatch.o \
-    dlzw1213.o huffman.o slzw12.o testarc.o listarc.o \
-    gethead.o filelist.o stubs.o store.o errors.o pack.o
+target = uncmp.exe
+cc = cl
+masm = masm
+
+# the following options choose: optimize for size, use compact model,
+# compile only, include symbolic debugging information, use maximum
+# warning level.
+
+c_opts = /Ox /AC /c /Zi /W3
+m_opts = /Mx /V
+cdefs =
+link = link
+HDRS = global.h archead.h uncmp.h
+SRCS = uncmp.c crc.c rle.c global.c dispatch.c dlzw1213.c \
+    huffman.c slzw12.c testarc.c listarc.c gethead.c filelist.c stubs.c \
+    store.c errors.c pack.c getcode.c
+OBJS = uncmp.obj crc.obj rle.obj global.obj dispatch.obj testarc.c \
+    d:\lib\setargv.obj dlzw1213.obj huffman.obj slzw12.obj listarc.obj \
+    gethead.obj filelist.obj stubs.obj store.obj errors.obj pack.obj \
+    getcode.obj
 
 
-uncmp:    $(OBJS) $(SRCS) $(HDRS)
- $(CC) $(OBJS) -o uncmp
-uncmp.o:    uncmp.c global.h archead.h uncmp.h
- $(CC) $(C_OPTS) $(CDEFS) uncmp.c
-crc.o:      crc.c global.h archead.h uncmp.h
- $(CC) $(C_OPTS) $(CDEFS) crc.c
-fileio.o:   fileio.c global.h archead.h uncmp.h
- $(CC) $(C_OPTS) $(CDEFS) fileio.c
-global.o:   global.c global.h archead.h uncmp.h
- $(CC) $(C_OPTS) $(CDEFS) global.c
-dispatch.o: dispatch.c global.h archead.h uncmp.h
- $(CC) $(C_OPTS) $(CDEFS) dispatch.c
-listarc.o:  listarc.c global.h archead.h
- $(CC) $(C_OPTS) $(CDEFS) listarc.c
-testarc.o:  testarc.c global.h global.c
- $(CC) $(C_OPTS) $(CDEFS) testarc.c
-dlzw1213.o: dlzw1213.c global.h archead.h uncmp.h dlzw1213.h
- $(CC) $(C_OPTS) $(CDEFS) dlzw1213.c
-slzw12.o:   slzw12.c
- $(CC) $(C_OPTS) $(CDEFS) slzw12.c
-huffman.o:  huffman.c global.h archead.h
- $(CC) $(C_OPTS) $(CDEFS) huffman.c
-gethead.o:  gethead.c global.h archead.h
- $(CC) $(C_OPTS) $(CDEFS) gethead.c
-filelist.o: filelist.c uncmp.h
- $(CC) $(C_OPTS) $(CDEFS) filelist.c
-stubs.o:    stubs.c
- $(CC) $(C_OPTS) $(CDEFS) stubs.c
-store.o:    store.c uncmp.h
- $(CC) $(C_OPTS) $(CDEFS) store.c
-errors.o:   errors.c uncmp.h
- $(CC) $(C_OPTS) $(CDEFS) errors.c
-pack.o:     pack.c uncmp.h
- $(CC) $(C_OPTS) $(CDEFS) pack.c
+uncmp.obj:    uncmp.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) uncmp.c
+
+crc.obj:      crc.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) crc.c
+
+rle.obj:      rle.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) rle.c
+
+global.obj:   global.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) global.c
+
+dispatch.obj: dispatch.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) dispatch.c
+
+listarc.obj:  listarc.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) listarc.c
+
+testarc.obj:  testarc.c global.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) testarc.c
+
+dlzw1213.obj: dlzw1213.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) dlzw1213.c
+
+slzw12.obj:   slzw12.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) slzw12.c
+
+huffman.obj:  huffman.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) huffman.c
+
+gethead.obj:  gethead.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) gethead.c
+
+filelist.obj: filelist.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) filelist.c
+
+stubs.obj:    stubs.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) stubs.c
+
+store.obj:    store.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) store.c
+
+errors.obj:   errors.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) errors.c
+
+pack.obj:     pack.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) pack.c
+
+getcode.obj:  getcode.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) getcode.c
+
+$(TARGET):    $(OBJS) $(SRCS) $(HDRS)
+    $(LINK) @LINK.LST
+

@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - DLZW1213, Version 1.03, created 6-28-89
+* UNCMP - DLZW1213, Version 1.04, created 7-03-89
 *
 * Dynamic Lempel-Ziv-Welch 12/13 bit uncompression module.
 *
@@ -17,107 +17,68 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <dos.h>
 #include <signal.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <sys\types.h>
+#include <sys\stat.h>
+#include <io.h>
 #include <stdlib.h>
-#include "dlzw1213.h"
 #include "uncmp.h"
 #include "archead.h"
 #include "global.h"
 
-long headerlength;
+/* the next two codes should not be changed lightly, as they must not */
+/* lie within the contiguous general code space. */
 
-void decomp(FILE *,FILE *);  /* function only used by dlzw_decomp() */
-int PASCAL getcode(FILE *);
+#define FIRST 257            /* first free entry */
+#define CLEAR 256            /* table clear output code */
 
-unsigned char rmask[9] = {   /* for use with getcode() */
-    0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff
-    };
+/* The tab_suffix table needs 2**BITS characters.  We                     */
+/* get this from the beginning of htab.  The output stack uses the rest   */
+/* of htab, and contains characters.  There is plenty of room for any     */
+/* possible stack (stack used to be 8000 characters).                     */
 
-int PASCAL getcode(FILE *in)
+#define MAXCODE(n_bits)      (( 1<<(n_bits)) - 1)
+
+#define tab_prefixof(i)      codetab[i]
+#define tab_suffixof(i)      ((unsigned char *)(htab))[i]
+#define de_stack             ((unsigned char *)&tab_suffixof(1<<BITS))
+
+#define BITS       13        /* could be restricted to 12 */
+#define INIT_BITS  9         /* initial number of bits/code */
+
+#define HSIZE      9001      /* 91% occupancy */
+
+long htab[HSIZE];
+unsigned short codetab[HSIZE];
+short hsize;                 /* for dynamic table sizing */
+
+/* all of the following are NEAR to speed things up! */
+
+int NEAR clear_flg = 0;
+int NEAR n_bits;                  /* number of bits/code */
+int NEAR max_bits = BITS;         /* user settable max # bits/code */
+int NEAR maxcode;                 /* maximum code, given n_bits */
+int NEAR maxmaxcode = 1 << BITS;  /* should NEVER generate this code */
+int NEAR free_ent = 0;            /* first unused entry */
+
+void dlzw_decomp(FILE *in, FILE *out, char arctype)
 {
-    static char iobuf[BITS];
+    unsigned char *stackp;
+    register int finchar;
+    int oldcode;
     register int code;
-    static int offset = 0, size = 0;
-    register int r_off, bits;
-    register unsigned char *bp = iobuf;
+    int incode;
 
-    if (clear_flg > 0 || offset >= size || free_ent > maxcode) {
-
-         /* If the next entry will be too big for the current code */
-         /* size, then we must increase the size.  This implies */
-         /* reading a new buffer full, too. */
-
-         if (free_ent > maxcode) {              n_bits++;
-              if (n_bits == max_bits)
-                   maxcode = maxmaxcode;    /* won't get any bigger now */
-              else
-                   maxcode = MAXCODE(n_bits);
-         }
-         if (clear_flg > 0) {
-              maxcode = MAXCODE(INIT_BITS);
-              n_bits = INIT_BITS;
-              clear_flg = 0;
-         }
-         for (size = 0; size < n_bits; size++) {
-              if ((code = getc_pak(in)) == EOF)
-                   break;
-              else
-                   iobuf[size] = code;
-         }
-
-         if (size <= 0)
-              return -1;     /* end of file */
-
-         offset = 0;
-
-         /* Round size down to integral number of codes */
-
-         size = (size << 3) - (n_bits - 1);
-    }
-    r_off = offset;
-    bits = n_bits;
-
-    /* Get to the first byte. */
-
-    bp += (r_off >> 3);
-    r_off &= 7;
-
-    /* Get first part (low order bits) */
-
-    code = (*bp++ >> r_off);
-    bits -= (8 - r_off);
-    r_off = 8 - r_off;  /* now, offset into code word */
-
-    /* Get any 8 bit parts in the middle (<=1 for up to 16 bits). */
-
-    if (bits >= 8) {
-         code |= *bp++ << r_off;
-         r_off += 8;
-         bits -= 8;
-    }
-
-    /* high order bits. */
-
-    code |= (*bp & rmask[bits]) << r_off;
-    offset += n_bits;
-
-    return code;
-}
-
-int dlzw_decomp(FILE *in, FILE *out, int arctype, long size)
-{
-    headertype = arctype;
-    headerlength = size;
-
-    if (headertype == 8) {           /* UnCrunch */
+    if (arctype == 8) {           /* UnCrunch */
          hsize = 5003;
 
          /* every Crunched file must start with a byte equal to 12, */
          /* the maximum bit size of the pointer-length pair */
 
-         if (12 != (max_bits = getc_pak(in))) {
+         if (!sizeleft) return; /* no bytes in file */
+         sizeleft--;
+         if (12 != (max_bits = getc(in))) {
               read_error();
          }
     } else {                      /* UnSquash */
@@ -125,18 +86,8 @@ int dlzw_decomp(FILE *in, FILE *out, int arctype, long size)
          hsize = 9001;
     }
     maxmaxcode = 1 << max_bits;
-    decomp(out,in);
-    return(0);
-}
 
-void decomp(FILE *out, FILE *in)
-{
-    register unsigned char *stackp;
-    register int finchar;
-    register int code, oldcode;
-    int incode;
-
-    /* As above, initialize the first 256 entries in the table */
+    /* start of decompression */
 
     maxcode = MAXCODE(INIT_BITS);
     n_bits = INIT_BITS;
@@ -145,19 +96,20 @@ void decomp(FILE *out, FILE *in)
     /* removed? */
 
     for (code = 255; code >= 0; code--) {
-         tab_suffixof(code) = (unsigned char) code | (unsigned int) 0;
+         tab_suffixof(code) = code;
     }
     free_ent = FIRST;
     incode = finchar = oldcode = getcode(in);
     if (oldcode == EOF)  /* EOF already? */
          return;         /* Get out of here */
-    add1crc(incode);     /* calc the crc */
 
-    if (headertype==8)
-         lastc = (char) incode;
+    if (arctype==8)
+         putc_rle((char)incode,out);
+    else {
+         add1crc((char)incode);
+         putc((char)incode,out);
+         }
 
-    fwrite((char *) &incode, sizeof(char), 1, out);   /* first code must be 8 */
-                                                      /* bits = char */
     stackp = de_stack;
 
     while ((code = getcode(in)) > -1) {
@@ -188,18 +140,19 @@ void decomp(FILE *out, FILE *in)
          }
          *stackp++ = finchar = tab_suffixof(code);
 
-         /* the following code for headertype 9 used to use memrev() to */
+         /* the following code for arctype 9 used to use memrev() to */
          /* reverse the order and then output using fread.  The following */
          /* method was tested to be faster */
 
          /* characters are read in reverse order from the stack (like any */
          /* stack) and then output. */
 
-         if (headertype == 9) {
-              do
-                   putc_pak(*--stackp, out);
-              while (stackp > de_stack);
-         } else {  /* headertype==8  */
+         if (arctype == 9) {
+              do {
+                   add1crc(*--stackp);
+                   putc(*stackp,out);
+              } while (stackp > de_stack);
+         } else {  /* arctype==8  */
               do
                    putc_rle(*--stackp, out);
               while (stackp > de_stack);
@@ -219,3 +172,4 @@ void decomp(FILE *out, FILE *in)
     }
 }
 
+

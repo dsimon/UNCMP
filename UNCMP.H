@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - UNCMP.H, Version 1.03, created 6-28-89
+* UNCMP - UNCMP.H, Version 1.04, created 7-03-89
 *
 * Function prototypes for all functions used, as well as all the
 * defines that are needed for all of the modules.
@@ -18,8 +18,11 @@
 # define COMPILER  "MSC 5.1 and LINK 3.65"
 #endif
 
-#define PASCAL     pascal    /* can be undefined if compiler doesn't support */
-                             /* pascal calling.  Improves speed slightly */
+/* the following defines are MSC extensions to C, if your compiler doesn't */
+/* support them then just define them to blank. */
+
+#define PASCAL     pascal    /* improves calling speed slightly */
+#define NEAR       near      /* makes commonly used data easier to reference */
 
 /* the following is an inline version of addcrc for 1 character, implemented */
 /* as a macro, it really speeds things up. */
@@ -30,10 +33,8 @@
 
 void main(int argc, char **argv);
 void addcrc(char *cc, int i);
-int dlzw_decomp(FILE *in,FILE *out,int arctype,long size);
-void putc_pak(char c,FILE *out);
+void dlzw_decomp(FILE *in,FILE *out,char arctype);
 void putc_rle(unsigned char c,FILE *out);
-int getc_pak(FILE *in);
 int getarcheader(FILE *in);
 void sq_decomp(FILE *in, FILE *out);
 void list_arc(FILE *in);
@@ -54,3 +55,5 @@ void read_error(void);
 void write_error(void);
 void mem_error(void);
 void rle_decomp(FILE *in, FILE *out);
+int getcode(FILE *in);
+

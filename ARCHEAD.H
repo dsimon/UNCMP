@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - ARCHEAD.H, Version 1.03, created 6-28-89
+* UNCMP - ARCHEAD.H, Version 1.04, created 7-03-89
 *
 * Definition of archive header structure.
 *
@@ -14,9 +14,10 @@ struct archive_header {
                               * method */
     char            name[13];/* file name */
     unsigned long   size;    /* size of compressed file */
-    short           date;    /* file date */
-    short           time;    /* file time */
-    unsigned short  crc;     /* cyclic redundancy check */
+    int             date;    /* file date */
+    int             time;    /* file time */
+    unsigned        crc;     /* cyclic redundancy check */
     unsigned long   length;  /* true file length */
 };                           /* the next size bytes after the header */
 #pragma pack()
+

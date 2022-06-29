@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - UNSTORE, Version 1.03, created 6-28-89
+* UNCMP - UNSTORE, Version 1.04, created 7-03-89
 *
 * Uncompress archives stored with method 1 and 2 (storing).
 *
@@ -16,9 +16,9 @@
 #else /* MSC */
 #include <malloc.h>
 #endif
+#include "uncmp.h"
 #include "archead.h"
 #include "global.h"
-#include "uncmp.h"
 
 #define MAXOUTSIZE 16384
 
@@ -33,8 +33,12 @@ void store_decomp(FILE *in, FILE *out)
 
          /* do char by char if no room for buffer */
 
-         while ((c=getc_pak(in)) != EOF)
-              putc_pak(c,out);
+         while (!sizeleft) {
+              sizeleft--;
+              c=getc(in);
+              add1crc(c);
+              putc(c,out);
+              }
          return;
          }
 
@@ -58,3 +62,4 @@ void store_decomp(FILE *in, FILE *out)
     }
 
 
+

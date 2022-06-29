@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - ERRORS, Version 1.03, created 6-28-89
+* UNCMP - ERRORS, Version 1.04, created 7-03-89
 *
 * Common error messages are here to save space.
 *
@@ -8,9 +8,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "uncmp.h"
 #include "archead.h"
 #include "global.h"
-#include "uncmp.h"
 
 void read_error(void)
 {
@@ -29,3 +29,4 @@ void mem_error(void)
     printf("Error allocating memory\n");
     exit(1);
     }
+

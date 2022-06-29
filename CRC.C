@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - CRC, Version 1.03, created 6-28-89
+* UNCMP - CRC, Version 1.04, created 7-03-89
 *
 * 16 bit CRC calculator.
 *
@@ -14,11 +14,11 @@
 *******************************************************************/
 
 #include <stdio.h>
+#include "uncmp.h"
 #include "archead.h"
 #include "global.h"
-#include "uncmp.h"
 
-int crctab[] =               /* CRC lookup table */
+int NEAR crctab[] =               /* CRC lookup table */
 {
     0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
     0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
@@ -60,3 +60,4 @@ void addcrc(char *cc, int i)
          crc = ((crc >> 8) & 0x00ff) ^ crctab[(crc ^ *++cc) & 0x00ff];
 }
 
+

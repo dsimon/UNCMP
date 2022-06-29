@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - PACK, Version 1.03, created 6-28-89
+* UNCMP - PACK, Version 1.04, created 7-03-89
 *
 * Uncompresses files saved using the pack method (3).  Pack uses
 * RLE compression.
@@ -9,9 +9,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "uncmp.h"
 #include "archead.h"
 #include "global.h"
-#include "uncmp.h"
 
 #define MAXOUTSIZE 16384
 
@@ -24,8 +24,11 @@ void rle_decomp(FILE *in, FILE *out)
 
          /* uncompress char by char if no room for buffer */
 
-         while ((c=getc_pak(in)) != EOF)
+         while (sizeleft) {
+              sizeleft--;
+              c=getc(in);
               putc_rle(c,out);
+              }
          }
 
     while (sizeleft >= MAXOUTSIZE) {
@@ -44,3 +47,4 @@ void rle_decomp(FILE *in, FILE *out)
     free(buffer);
     }
 
+
