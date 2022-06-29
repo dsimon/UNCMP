@@ -1,0 +1,180 @@
+Turbo C Configuration File 
+else
+  echo "will not over write ./uncmp.tc"
+fi
+if `test ! -s ./user.man`
+then
+echo "writing ./user.man"
+cat > ./user.man << '\Rogue\Monster\'
+                   UNCMP v1.00 USER MANUAL
+                   -----------------------
+
+What is UNCMP?
+--------------
+UNCMP is a Public Domain un-archiver with full C source code
+for MS-DOS.  UNCMP was written by Derron Simon, with most of
+the code coming from Public Domain sources and the rest
+from by Derron Simon.  UNCMP comes complete with source code
+for MSC 5.1 and Turbo C 2.00 and is very customizable for C
+programmers who wish to customize it to a particular
+application, however you do not need to be a C programmer or
+technically inclined to use it.  The interface is very
+straight forward and simple, and UNCMP has one major thing
+going for it, IT'S FREE!
+
+Who should use UNCMP?
+---------------------
+UNCMP was written first to be an end-user application and
+then to be a platform for C programmers to use in creating a
+Public Domain un-archiver.  People who need to extract files
+from ARC and PKA archives daily should consider UNCMP if
+they do not wish to pay for an un-archiver or would rather
+use a program that is user-supported.
+
+Who should _not_ use UNCMP?
+---------------------------
+UNCMP is lacking in areas that may be needed by some people.
+UNCMP is relatively slow, most commercial and shareware
+un-arcers are between 2 and 3 times faster than UNCMP.
+People who need and archiver must also use another archiver
+since UNCMP cannot create archives, it only extracts files
+from archives.
+
+UNCMP feature list
+------------------
+  o Ability to extract single or multiple files from
+    archives.
+  o Compatibility with SEA's ARC format and PKWARE's PKA
+    format.
+  o Support for all compression types in common use today,
+    including Squashing, Crunching, old style Crunching,
+    Squeezing, packing, and storing, but not crushing (a
+    proprietary format used by NoGate's PAK).
+  o Full C source code!
+  o Faster than all other PD un-archivers.
+  o Ability to list contents of archives.
+  o Ability to test the integrity of archives.
+  o Command line flags to toggle automatic overwrite and
+    warning level.
+  o Ability to extract to a path.
+  o Ability to use wildcards in list of files to extract.
+  o Small (under 25k with MSC 5.1).
+  o Portable.
+
+Summary of commands
+-------------------
+To use UNCMP is very simple.  The format is as follows:
+
+    UNCMP [-xtv] [-wo] archive[.ext] [d:\path\]
+         [filename.ext] [...]
+
+Each of the above arguments that begins with a hyphen ('-')
+specifies an operation or modifier.  The first is an
+operation.  To extract a file the option '-x' is given right
+after UNCMP on the command line.  To test the integrity of a
+file's contents the option 't' is used.  To examine the
+contents of the archive, the option '-v' is used.  The
+second argument is the modifier.  Only two modifiers are
+available and they are '-w' and '-o' which specify to turn
+off warnings and overwrite files that already exist.  If no
+options are given, UNCMP defaults to extract with warnings
+and ask on overwrite.
+
+The archive must be an archive created with an ARC
+compatible program, such as ARC itself, PKARC, or any of a
+number of ARC compatible programs.  The default extension is
+ARC and is added if none is given.
+
+The fourth argument is the path to extract the files in the
+archive to.  It can be any valid path and must end with a
+slash ('\' or '/') for UNCMP to recognize it as a path.
+
+The last argument is a file specifier which specifies which
+files to extract.  Wildcards may be used and any number of
+files may be specified.
+
+Distribution Notice
+-------------------
+I hold no copyright to UNCMP and release it to the Public
+Domain.  I hope that UNCMP will not be vandalized and wish
+that I will not be taken advantage of by this very liberal
+policy.  Most of the source code came from PD sources, so
+this was written by those people as much as by myself.  If
+you modify UNCMP I will be very happy to receive your
+modifications and release them in the next update.  Please
+send them to me at one of the addresses below.  Thanks.
+Every official release of UNCMP will be packaged in an ARC
+compatible file with the following filename style:
+    UCMP100S.ARC - for the whole package, including C source
+                   code, documentation, and executable.
+    UCMP100E.ARC - for the executable and user
+                   documentation.
+Please do not use the above naming conventions for any
+non-official releases, and please keep the files together in
+the archives they came in.  Do not change the file
+groupings.
+
+About the author
+----------------
+I am a 17 year old C programmer who right now is looking for
+a good college and hoping to major in computer science.  I
+have been programming in C for about 3 years and became very
+interested in data compression.  I wrote UNCMP because of that
+interest.  I have written another utility which lists the
+contents of archives of many different formats called AV.
+AV is available on many systems across the country.  I will
+answer your questions if you send them to one of the
+addresses below:
+
+    Derron Simon             GEnie: D.SIMON
+    14 Valley Road
+    Glen Mills, PA 19342
+
+Or leave a message on one of the BBS's below, for Derron
+Simon.
+
+Distribution Points
+-------------------
+Every official version of UNCMP will be distributed as
+widely as possible by me, however the following BBS's and
+information services will always have the latest version.
+
+    PAL Software BBS - (914)762-8055 (2400/1200)
+    Rydal Board BBS - (215)884-6122 (2400/1200)
+    GEnie IBM Roundtable Software Library
+
+I will probably add more after the initial release of UNCMP,
+but they are the only ones I have right now.
+
+If you must, I will send you a version if you send me a
+diskette and a return mailer with postage.  I can only
+handle 720k and 1.44mb 3 1/2 diskettes and 360k 5 1/4
+diskettes.  Please try to find another method, because I
+don't want to be swamped with work.
+
+Trademarks
+----------
+ARC is a trademark of System Enhancement Associates.
+
+Credits
+-------
+The following people have contributed to this program, both
+knowingly and unknowingly.
+
+Leslie Satenstein - wrote the SQUASH program from which all
+    of the Crunching and Squashing code came from, as well
+    as the CRC and RLE code.
+
+Kent Williams - wrote the old method crunching routines.
+
+D.A. Huffman - the founder of the squeezing or huffman
+    method of data compression.
+
+James A. Storer - author of the book _Data Compression
+    Methods and Theory_, from which I learned about data
+    compression.
+
+Richard Greenlaw - wrote the huffman decoding routines used.
+
+I'm sure this list will grow as additions are made to UNCMP.
+

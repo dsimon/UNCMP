@@ -1,0 +1,57 @@
+####################################################################
+# UNCMP - MAKEFILE, Version 1.03, created 6-28-89
+#
+# Microsoft makefile for creating UNCMP v1.03.
+#
+# This files using another file named LINK.LST to give to LINK
+# because the number of files is too large for LINK to handle from
+# the command line.
+#
+# This code has been released into the Public Domain.
+####################################################################
+
+C_OPTS = -c -O
+CDEFS =
+HDRS = global.h archead.h dlzw1213.h uncmp.h
+SRCS = uncmp.c crc.c fileio.c global.c dispatch.c dlzw1213.c \
+    huffman.c slzw12.c listarc.c gethead.c filelist.c stubs.c \
+    store.c errors.c pack.c testarc.c
+OBJS = uncmp.o crc.o fileio.o global.o dispatch.o \
+    dlzw1213.o huffman.o slzw12.o testarc.o listarc.o \
+    gethead.o filelist.o stubs.o store.o errors.o pack.o
+
+
+uncmp:    $(OBJS) $(SRCS) $(HDRS)
+ $(CC) $(OBJS) -o uncmp
+uncmp.o:    uncmp.c global.h archead.h uncmp.h
+ $(CC) $(C_OPTS) $(CDEFS) uncmp.c
+crc.o:      crc.c global.h archead.h uncmp.h
+ $(CC) $(C_OPTS) $(CDEFS) crc.c
+fileio.o:   fileio.c global.h archead.h uncmp.h
+ $(CC) $(C_OPTS) $(CDEFS) fileio.c
+global.o:   global.c global.h archead.h uncmp.h
+ $(CC) $(C_OPTS) $(CDEFS) global.c
+dispatch.o: dispatch.c global.h archead.h uncmp.h
+ $(CC) $(C_OPTS) $(CDEFS) dispatch.c
+listarc.o:  listarc.c global.h archead.h
+ $(CC) $(C_OPTS) $(CDEFS) listarc.c
+testarc.o:  testarc.c global.h global.c
+ $(CC) $(C_OPTS) $(CDEFS) testarc.c
+dlzw1213.o: dlzw1213.c global.h archead.h uncmp.h dlzw1213.h
+ $(CC) $(C_OPTS) $(CDEFS) dlzw1213.c
+slzw12.o:   slzw12.c
+ $(CC) $(C_OPTS) $(CDEFS) slzw12.c
+huffman.o:  huffman.c global.h archead.h
+ $(CC) $(C_OPTS) $(CDEFS) huffman.c
+gethead.o:  gethead.c global.h archead.h
+ $(CC) $(C_OPTS) $(CDEFS) gethead.c
+filelist.o: filelist.c uncmp.h
+ $(CC) $(C_OPTS) $(CDEFS) filelist.c
+stubs.o:    stubs.c
+ $(CC) $(C_OPTS) $(CDEFS) stubs.c
+store.o:    store.c uncmp.h
+ $(CC) $(C_OPTS) $(CDEFS) store.c
+errors.o:   errors.c uncmp.h
+ $(CC) $(C_OPTS) $(CDEFS) errors.c
+pack.o:     pack.c uncmp.h
+ $(CC) $(C_OPTS) $(CDEFS) pack.c
