@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - STUBS, Version 1.04, created 7-03-89
+* UNCMP - STUBS, Version 1.20, created 3-17-90
 *
 * Contains stubs to keep LINK from including never used routines.
 *
@@ -12,11 +12,17 @@
 * for writes to the null segment.  Since it is needed only for
 * debugging and the code is pretty well debugged, I have replaced
 * it with a null routine to save space.  It saves 112 bytes with
-* MSC 5.1.  I think a bug in MSC causes problems with setting the
-* DOS errorcode with _nullcheck(), so this one returns an error-
-* level of 0 no matter what the main code sets on exit.
+* MSC 5.1.  If _nullcheck() doesn't return a value, the error code set
+* by exit() is lost, regardless of the value set by _nullcheck.
 *
-* This code has been released into the Public Domain (what a joke!).
+* All of UNCMP is Copyright (C) 1989-90 Derron Simon
+*
+* This program is free for everyone, but I retain all copyrights over
+* it.  Please see USER.MAN for more information.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *******************************************************************/
 
 void _setenvp(void)

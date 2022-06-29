@@ -1,0 +1,95 @@
+####################################################################
+# UNCMP - MAKEFILE.MSC, Version 1.10, created 7-15-89
+#
+# Microsoft MAKE makefile for creating UNCMP v1.10.
+#
+# This files using another file named LINK.LST to give to LINK
+# because the number of files is too large for LINK to handle from
+# the command line.
+#
+# This code has been released into the Public Domain.
+####################################################################
+
+cc = cl
+mc = masm
+
+# the following options choose: optimize for speed, use small model,
+# compile only, include symbolic debugging information, use maximum
+# warning level and defines MSC.
+
+c_opts = /Ox /AS /c /Zi /W3 /Fs
+m_opts = /Mx /V
+cdefs = /DMSC
+link = link
+HDRS = global.h archead.h uncmp.h
+SRCS = uncmp.c crc.c rle.c global.c dispatch.c dlzw1213.c \
+    huffman.c slzw12.c testarc.c listarc.c gethead.c filelist.c stubs.c \
+    store.c errors.c pack.c getcode.asm douncmp.c output.c license.c testarc.c
+OBJS = uncmp.obj crc.obj rle.obj global.obj dispatch.obj testarc.c \
+    d:\lib\setargv.obj dlzw1213.obj huffman.obj slzw12.obj listarc.obj \
+    gethead.obj filelist.obj stubs.obj store.obj errors.obj pack.obj \
+    getcode.obj douncmp.obj output.obj license.obj testarc.obj
+
+uncmp.obj:    uncmp.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) uncmp.c
+
+crc.obj:      crc.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) crc.c
+
+rle.obj:      rle.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) rle.c
+
+global.obj:   global.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) global.c
+
+dispatch.obj: dispatch.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) dispatch.c
+
+listarc.obj:  listarc.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) listarc.c
+
+testarc.obj:  testarc.c global.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) testarc.c
+
+dlzw1213.obj: dlzw1213.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) dlzw1213.c
+
+slzw12.obj:   slzw12.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) slzw12.c
+
+huffman.obj:  huffman.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) huffman.c
+
+gethead.obj:  gethead.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) gethead.c
+
+filelist.obj: filelist.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) filelist.c
+
+stubs.obj:    stubs.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) stubs.c
+
+store.obj:    store.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) store.c
+
+errors.obj:   errors.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) errors.c
+
+pack.obj:     pack.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) pack.c
+
+getcode.obj:  getcode.asm
+    $(MC) $(M_OPTS) $(MDEFS) getcode.asm;
+
+license.obj:  license.c
+    $(CC) $(C_OPTS) $(CDEFS) license.c
+
+output.obj:   output.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) output.c
+
+douncmp.obj:  douncmp.c $(HDRS)
+    $(CC) $(C_OPTS) $(CDEFS) douncmp.c
+
+uncmp.exe:    $(OBJS) $(SRCS) $(HDRS)
+    $(LINK) @LINK.LST
+    LZEXE UNCMP.EXE

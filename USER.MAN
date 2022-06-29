@@ -1,11 +1,28 @@
-                   UNCMP v1.04 USER MANUAL
-                   -----------------------
+
+
+
+
+
+
+
+                                  UNCMP
+
+                          Archive UnCompressor
+                              Version 1.20
+
+                           Copyright (c) 1989
+                                   by
+                              Derron Simon
+                              P.O. Box 179
+                          Gradyville, PA 19342
+                              (215)459-2981
+                              (215)459-3631
 
 What is UNCMP?
 --------------
 UNCMP is a Public Domain un-archiver with full C source code for MS-DOS.  UNCMP
 was written by Derron Simon, with most of the code coming from Public Domain
-sources and the rest from by Derron Simon.  UNCMP comes complete with source
+sources and the rest written by Derron Simon.  UNCMP comes complete with source
 code for MSC 5.1 and Turbo C 2.00 and is very customizable for C programmers
 who wish to customize it to a particular application, however you do not need
 to be a C programmer or technically inclined to use it.  The interface is very
@@ -16,40 +33,40 @@ Who should use UNCMP?
 ---------------------
 UNCMP was written first to be an end-user application and then to be a platform
 for C programmers to use in creating a Public Domain un-archiver.  People who
-need to extract files from ARC and PKA archives daily should consider UNCMP if
+need to extract files from ARC and PKARC archives daily should consider UNCMP if
 they do not wish to pay for an un-archiver or would rather use a program that
 is user-supported.
 
 Who should _not_ use UNCMP?
 ---------------------------
-UNCMP is lacking in areas that may be needed by some people. UNCMP is not the
-fastest on the market.  It is about comparable with most unarchivers, but can
-be beat.  If speed is most important, try another. People who need and
-archiver must also use another archiver since UNCMP cannot create archives, it
-only extracts files from archives.
+UNCMP is lacking in areas that may be needed by some people. While UNCMP if fast
+it is not the fastest on the market.  It is about comparable with most
+unarchivers, but can be beat.  If speed is most important, try another (PKXARC
+will do fine).
 
 UNCMP feature list
 ------------------
+->o Full C source code included/available!<-
+  o Immediate support for MSC 5.x, QuickC 2.0 and Turbo C 2.0.
+  o The C code is very portable.
+->o Faster than all other PD un-archivers!<-
+->o Small (under 16k with MSC 5.1 or QuickC 2.0)!<-
   o Ability to extract single or multiple files from archives.
-  o Compatibility with SEA's ARC format and PKWARE's PKA format.
-  o Support for all compression types in common use today, including Squashing,
-    Crunching, old style Crunching, Squeezing, packing, and storing, but not
-    crushing (a proprietary format used by NoGate's PAK).
-  o Full C source code!
-  o Faster than all other PD un-archivers.
+  o Ability to extract to a path.
+  o Ability to use wildcards in list of files to extract.
   o Ability to list contents of archives.
   o Ability to test the integrity of archives.
   o Command line flags to toggle automatic overwrite and warning level.
-  o Ability to extract to a path.
-  o Ability to use wildcards in list of files to extract.
-  o Small (under 25k with MSC 5.1).
-  o Portable.
+  o Support for all compression types in common use today, including Squashing,
+    Crunching, old style Crunching, Squeezing, packing, and storing, BUT NOT
+    crushing or distilling (proprietary formats used by NoGate's PAK).
+  o Compatibility with SEA's ARC format.
 
 Summary of commands
 -------------------
 To use UNCMP is very simple.  The format is as follows:
 
-    UNCMP [-xtv] [-wo] archive[.ext] [d:\path\]
+    UNCMP [-xtvcp] [-wo] archive[.ext] [d:\path\]
          [filename.ext] [...]
 
 Each of the above arguments that begins with a hyphen ('-') specifies an
@@ -59,11 +76,13 @@ integrity of a file's contents the option 't' is used.  To examine the contents
 of the archive, the option '-v' is used.  The second argument is the modifier.
 Only two modifiers are available and they are '-w' and '-o' which specify to
 turn off warnings and overwrite files that already exist.  If no options are
-given, UNCMP defaults to extract with warnings and ask on overwrite.
+given, UNCMP defaults to extract with warnings and ask on overwrite.  The '-c'
+option shows the program license.  The '-p' option outputs the contents of the
+archive to the screen.
 
 The archive must be an archive created with an ARC compatible program, such as
 ARC itself, PKARC, or any of a number of ARC compatible programs.  The default
-extension is ARC and is added if none is given.
+extension is ARC and is added if no extension is specified.
 
 The fourth argument is the path to extract the files in the archive to.  It can
 be any valid path and must end with a slash ('\' or '/') for UNCMP to recognize
@@ -74,26 +93,35 @@ Wildcards may be used and any number of files may be specified.
 
 Distribution Notice
 -------------------
-I hold no copyright to UNCMP and release it to the Public Domain.  My wish is
-that any program which was fashioned from the UNCMP sources will be released
-with full source code.  Please do not use the UNCMP sources to create another
-unarcher!  I hope that UNCMP will not be vandalized and wish that I will not
-be taken advantage of by this very liberal policy.  Most of the source code
-came from PD sources, so this was written by those people as much as by myself.
-If you modify UNCMP I will be very happy to receive your modifications and
-release them in the next update.  Please send them to me at one of the
-addresses below.  Thanks.  Every official release of UNCMP will be packaged in
-an ARC compatible file with the following filename style:
-    UCMP100S.ARC - for the whole package, including C source code,
-                   documentation, and executable.
-    UCMP100E.ARC - for the executable and user documentation.
+I have retained the copyright to UNCMP versions 1.10 and above.  Earlier
+versions were fully public domain, you can do with them whatever you want.  I
+do hope that the sources will be used responsibly and not sold in any way.
+UNCMP v1.10 was released under the GNU GENERAL PUBLIC LICENSE.  I have opted
+not to release v1.20 under that license because of the amount of bad comments
+I received from users about the GNU restrictions.  The copyright to all
+versions above and including 1.10 is still held by me, but I have given up
+all my rights to copy/modify/distribute UNCMP to the Public Domain.
+   *** I hope that people will not take advantage of this liberal
+   *** policy of distribution for UNCMP, and if they do I will
+   *** reinstate the GNU license.
+For complete copyright information, please type 'uncmp -c'.  When distributing
+UNCMP, please use the following conventions.  Distribute UNCMP in either an
+archive or self-extracting archive named UCMPNNNX, where NNN is the version
+number and X is either an E or a S.  An E specifies that the file contains only
+UNCMP.EXE and the manuals.  An S indicates that the file contains UNCMP.EXE and
+the manuals as well as full C source code.  This version of UNCMP was released
+in the following files.
+    UCMP110S.EXE - a self-extracting archive with the whole package, including
+         C source code, documentation, and executable.
+    UCMP110E.EXE - a self-extracting archive with the executable and user
+         documentation.
 Please do not use the above naming conventions for any non-official releases,
 and please keep the files together in the archives they came in.  Do not
 change the file groupings.
 
 About the author
 ----------------
-I am a 17 year old C programmer who right now is looking for a good college and
+I am a 18 year old C programmer who right now is looking for a good college and
 hoping to major in computer science.  I have been programming in C for about 3
 years and became very interested in data compression.  I wrote UNCMP because of
 that interest.  I have written another utility which lists the contents of
@@ -102,10 +130,16 @@ across the country.  I will answer your questions if you send them to one of
 the addresses below:
 
     Derron Simon             GEnie: D.SIMON
-    14 Valley Road
-    Glen Mills, PA 19342
+    14 Valley Road           CompuServe: 72571,1524
+    Glen Mills, PA 19342     Voice: (215)459-2981 or (215)459-3631
 
-Or leave a message on one of the BBS's below, for Derron Simon.
+Or leave a message on one of the BBS's below, marked for Derron Simon.
+
+What's on the way
+-----------------
+I have a working version of CMP, an archive compressor, right now.  I am busy
+adding features and it will eventually be released (with full C source code, of
+course!).
 
 Distribution Points
 -------------------
@@ -114,16 +148,13 @@ me, however the following BBS's and information services will always have the
 latest version.
 
     PAL Software BBS - (914)762-8055 (2400/1200)
-    Rydal Board BBS - (215)884-6122 (2400/1200)
+    Rydal Board BBS - (215)884-6122 (9600/2400/1200)
     GEnie IBM Roundtable Software Library
 
-I will probably add more after the initial release of UNCMP, but they are the
-only ones I have right now.
-
-If you must, I will send you a version if you send me a diskette and a return
-mailer with postage.  I can only handle 720k and 1.44mb 3 1/2 diskettes and
-360k 5 1/4 diskettes.  Please try to find another method, because I don't want
-to be swamped with work.
+If you must, I will send you the latest version if you send me a diskette and
+a return mailer with postage.  I can only handle 720k and 1.44mb 3 1/2
+diskettes and 360k 5 1/4 diskettes.  Please try to find another method, because
+I don't want to be swamped with work.
 
 Trademarks
 ----------
@@ -150,6 +181,9 @@ Richard Greenlaw - wrote the huffman decoding routines used.
 Thom Henderson - for the original, industry standard, ARC archiver.
 
 Robert Tolz - for letting me use his BBS to distribute UNCMP.
+
+Phil Katz - for his PKXARC utility, and telling me how to determine what
+    archives were made by which archivers.
 
 I'm sure this list will grow as additions are made to UNCMP.
 

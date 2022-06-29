@@ -1,5 +1,5 @@
 /*******************************************************************
-* UNCMP - CRC, Version 1.04, created 7-03-89
+* UNCMP - CRC, Version 1.20, created 3-17-90
 *
 * 16 bit CRC calculator.
 *
@@ -8,9 +8,16 @@
 *
 * This code came from SQUASH.C by Leslie Satensten, which was taken
 * from an article by David Schwaderer in the April 1985 issue of
-* PC Tech Journal, and is thus in the Public Domain.
+* PC Tech Journal.
 *
-* This code has been released into the Public Domain.
+* All of UNCMP is Copyright (C) 1989-90 Derron Simon
+*
+* This program is free for everyone, but I retain all copyrights over
+* it.  Please see USER.MAN for more information.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *******************************************************************/
 
 #include <stdio.h>
@@ -18,7 +25,7 @@
 #include "archead.h"
 #include "global.h"
 
-int NEAR crctab[] =               /* CRC lookup table */
+int NEAR crctab[] =            /* CRC lookup table */
 {
     0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
     0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
@@ -57,7 +64,6 @@ int NEAR crctab[] =               /* CRC lookup table */
 void addcrc(char *cc, int i)
 {
     for (cc--; i--;)
-         crc = ((crc >> 8) & 0x00ff) ^ crctab[(crc ^ *++cc) & 0x00ff];
+       crc = ((crc >> 8) & 0x00ff) ^ crctab[(crc ^ *++cc) & 0x00ff];
 }
-
 
