@@ -102,18 +102,18 @@ Wish list of enhancements
 What follows is a wish list of enhancements that I'd be more than happy to see
 implemented if you've got the time.
 
-  o Support for garbled files (encrypted)
-  o Rewrite getcode() in module DLZW1213.C in assembly
+  - Support for garbled files (encrypted)
+  - Rewrite getcode() in module DLZW1213.C in assembly
     (NOTE: as of version 1.04, getcode is right now near optimal speed)
     (NOTE: as of version 1.20, getcode is in assembly, but not hand
      coded.  A handcoded 80386 version would be nice ;>)
-  o Faster RLE decoding (with large buffer handling)
-->o Support for crushing (arctype 10)<-
-  o Support for wildcard archive names (ie. 'UNCMP -o *.arc *.c' would extract
+  - *Faster RLE decoding (with large buffer handling)*
+  - Support for crushing (arctype 10)
+  - Support for wildcard archive names (ie. 'UNCMP -o *.arc *.c' would extract
     all the *.C files from every ARC file in the current directory)
-  o Self-extracting archive capability
+  - Self-extracting archive capability
     (How do you make an EXE think of the rest of itself as an archive?)
-->o Compatiblity with more archive formats (ZIP/LZH)?  What do you think?<-
+  - *Compatiblity with more archive formats (ZIP/LZH)?  What do you think?*
 
 Any speed improvements to UNCMP are welcome.
 
